@@ -28,7 +28,7 @@ def image_classification():
   os.system("mkdir temp")
   tf.saved_model.save(h5_model, "./temp")
 
-  os.system("python ./model-optimizer/mo_tf.py \
+  os.system("python ./model_optimizer/mo_tf.py \
             --input_shape='[1,224,224,3]' \
             --saved_model_dir ./temp \
             --output_dir ./image_classification")
@@ -56,11 +56,14 @@ def image_segmentation():
   os.system("mkdir temp")
   tf.saved_model.save(h5_model, "./temp")
 
-  os.system("python ./model-optimizer/mo_tf.py \
+  os.system("python ./model_optimizer/mo_tf.py \
             --saved_model_dir ./temp \
             --output_dir ./image_segmentation")
   os.system("rm -rf ./temp")
 
+  src = Image.open("is-001.jpeg")
+  src = src.resize((384, 384))
+  src = normalize(np.array(src))
   ie = IECore()
   network = ie.read_network(model = "image_segmentation/saved_model.xml", weights = "image_segmentation/saved_model.bin")
   exec_net = ie.load_network(network=network, device_name='CPU')
@@ -71,7 +74,7 @@ def image_segmentation():
 
 
 def main():
-  image_classification()
+  # image_classification()
   image_segmentation()
 
 
